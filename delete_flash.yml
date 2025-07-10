@@ -1,4 +1,4 @@
-- name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"                                                                             final_delete_script.yml                                                                                            - name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"
+- name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"                                                                                                                                                                  - name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"
   hosts: cisco
   gather_facts: no
   connection: network_cli
