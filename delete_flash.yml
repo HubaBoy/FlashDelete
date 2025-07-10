@@ -1,0 +1,43 @@
+- name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"                                                                             final_delete_script.yml                                                                                            - name: "Delete all files except c1900-universalk9-mz.spa.157-4.M3.bin from Cisco router"
+  hosts: cisco
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+
+    - name: "Get file list from flash:"
+      ios_command:
+        commands:
+          - "dir flash:"
+      register: flash_output
+
+    - name: Debug
+      debug:
+        msg: "{{ flash_output.stdout_lines }}"
+
+    - name: "Extract .bin file names from dir output"
+      set_fact:
+        files_to_delete: >-
+          {{
+            flash_output.stdout_lines[0]
+            | map('trim')
+            | select('ne', '')
+            | select('match', '.*[0-9][0-9]:[0-9][0-9]:[0-9][0-9].*')
+            | map('regex_replace', '^.*\s([0-9a-zA-Z\._\-]+)$', '\1')
+            | select('ne', 'c1900-universalk9-mz.SPA.152-4.M3.bin')
+          }}
+
+    - name: Show parsed .bin filenames
+      debug:
+        var: files_to_delete
+    - name: Show parsed .bin filenames
+      debug:
+        var: files_to_delete
+
+    - name: Delete unwanted files
+      ios_command:
+        commands:
+          - "delete /force /recursive flash:{{ item }}"
+      when: files_to_delete | length > 0
+      loop: "{{ files_to_delete }}"
+
